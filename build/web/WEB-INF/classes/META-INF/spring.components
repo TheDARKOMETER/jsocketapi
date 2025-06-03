@@ -1,1 +1,3 @@
 com.jsocket.controller.HelloController=org.springframework.stereotype.Component
+com.jsocket.controller.ViewController=org.springframework.stereotype.Component
+com.jsocket.controller.WebConfig=org.springframework.stereotype.Component
