@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 // Java based url mapping instead of xml configuration for less verbosity.
 
-
 @Controller
 public class ViewController {
-    
     @GetMapping("/index.htm")
     public String index() {
         return "index";
