@@ -1,5 +1,0 @@
-com.jsocket.config.WebConfig=org.springframework.stereotype.Component
-com.jsocket.config.WebSocketConfiguration=org.springframework.stereotype.Component
-com.jsocket.controller.MessageController=org.springframework.stereotype.Component
-com.jsocket.controller.ViewController=org.springframework.stereotype.Component
-com.jsocket.restcontroller.HelloController=org.springframework.stereotype.Component
