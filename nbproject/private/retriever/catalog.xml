@@ -7,4 +7,5 @@
     <system systemId="https://www.springframework.org/schema/tool/spring-tool-4.3.xsd" uri="www.springframework.org/schema/tool/spring-tool-4.3.xsd"/>
     <system systemId="http://www.springframework.org/schema/tx" uri="www.springframework.org/schema/tx/index"/>
     <system systemId="http://www.springframework.org/schema/aop" uri="www.springframework.org/schema/aop/index"/>
+    <system systemId="http://ant.apache.org/ivy/schemas/ivy.xsd" uri="ant.apache.org/ivy/schemas/ivy.xsd"/>
 </catalog>

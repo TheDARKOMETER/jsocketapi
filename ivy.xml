@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation=
+                   "http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="myorg"
+          module="mymodule"/>
+    
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+    <dependencies>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.17.3"/>
+    </dependencies>
+    
+</ivy-module>
