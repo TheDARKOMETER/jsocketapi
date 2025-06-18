@@ -15,6 +15,11 @@
     <property name="ivy.jar.dir" value="${basedir}/ivy"/>
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
 
+    <path id="project.classpath">
+        <fileset dir="lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
     
     <target name="download-ivy" unless="skip.download">
         <mkdir dir="${ivy.jar.dir}"/>
@@ -56,14 +61,9 @@
        <delete dir="${classes.dir}"/>
        <delete dir="${jar.dir}"/>
    </target>
-   
-   <target name="compile">
-       <mkdir dir="${classes.dir}"/>
-       <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false">
-           <include name="java/com/jsocket/**/*.java"/>
-       </javac>
-   </target>
-   
+-->   
+
+   <!--
    <target name="jar" depends="compile">
        <mkdir dir="${jar.dir}"/>
        <jar destfile="${jar.dir}/${jar.name}" basedir="${classes.dir}"/>

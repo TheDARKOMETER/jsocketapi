@@ -8,20 +8,23 @@ package com.jsocket.classes;
  *
  * @author User
  */
-
 public class Greeting {
 
-	private String content;
+    private String content;
 
-	public Greeting() {
-	}
+    public Greeting() {
+    }
 
-	public Greeting(String content) {
-		this.content = content;
-	}
+    public Greeting(String content) {
+        this.content = content;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
 
 }

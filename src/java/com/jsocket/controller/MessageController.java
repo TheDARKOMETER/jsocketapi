@@ -6,18 +6,24 @@ package com.jsocket.controller;
 
 import com.jsocket.classes.Greeting;
 import com.jsocket.classes.HelloMessage;
+import java.util.logging.Level;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import java.util.logging.Logger;
 import org.springframework.web.util.HtmlUtils;
 
 @Controller
 public class MessageController {
-	@MessageMapping("/chat")
-	@SendTo("/topic/messages")
-	public Greeting greeting(HelloMessage message) throws Exception {
-		Thread.sleep(1000); // simulated delay
-		return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
-	}
+
+    Logger logger = Logger.getLogger(MessageController.class.getName());
+
+    @MessageMapping("/chat")
+    @SendTo("/topic/greetings")
+    public Greeting greeting(HelloMessage message) throws Exception {
+        Thread.sleep(1000); // simulated delay
+        logger.log(Level.INFO, "MessageController called with message as " + message.getName());
+        return new Greeting("Hello, " + message.getName() + "!");
+    }
 
 }

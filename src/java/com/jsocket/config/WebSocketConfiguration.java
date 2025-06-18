@@ -12,6 +12,7 @@ import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
 import java.util.List;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 
 @Configuration
