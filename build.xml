@@ -21,6 +21,13 @@
         </fileset>
     </path>
     
+    <path id="ivy.lib.path">
+        <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+    </path>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    
+    
+    <!-- Run this manually only if you don’t already have ivy.jar -->
     <target name="download-ivy" unless="skip.download">
         <mkdir dir="${ivy.jar.dir}"/>
         <!--  download Ivy from web site so that it can be used even without any special installation  -->
@@ -28,24 +35,18 @@
         <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true"/>
     </target>
     
-    <target name="install-ivy" depends="download-ivy" description="--> install ivy">
-        <!--  try to load Ivy here from local Ivy dir, in case the user has not already dropped
-        it into Ant's lib dir (note that the latter copy will always take precedence).
-        We will not fail as long as local lib dir exists (it may be empty) and
-        Ivy is in at least one of Ant's lib dir or the local lib dir.  -->
-        <path id="ivy.lib.path">
-            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
-        </path>
-        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
-    </target>
     
-    <target name="resolve" depends="install-ivy" description="--> retrieve dependencies with Ivy">
+ 
+    <target name="resolve" description="--> retrieve dependencies with Ivy">
         <ivy:retrieve/>
     </target>
      
     <target name="clean-ivy" description="--> clean the Ivy installation">
         <delete dir="${ivy.jar.dir}"/>
     </target>
+    
+    <target name="-pre-compile" depends="resolve" />
+
     
     <!--    <property name="build.dir" value="build"/>
     <property name="src.dir" value="src"/>-->
@@ -58,12 +59,12 @@
     <property name="jar.name" value="jsocket-shared-classes.jar"/>-->
     
     <!--    <target name="clean">
-       <delete dir="${classes.dir}"/>
-       <delete dir="${jar.dir}"/>
-   </target>
--->   
+           <delete dir="${classes.dir}"/>
+           <delete dir="${jar.dir}"/>
+       </target>
+    -->   
 
-   <!--
+    <!--
    <target name="jar" depends="compile">
        <mkdir dir="${jar.dir}"/>
        <jar destfile="${jar.dir}/${jar.name}" basedir="${classes.dir}"/>

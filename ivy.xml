@@ -9,6 +9,9 @@
     <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
     <dependencies>
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.17.3"/>
+        <dependency org="jakarta.persistence" name="jakarta.persistence-api" rev="3.1.0"/>
+        <dependency org="org.hsqldb" name="hsqldb" rev="2.7.4"/>
+        <dependency org="org.springframework" name="spring-orm" rev="5.3.36"/>
     </dependencies>
     
 </ivy-module>
