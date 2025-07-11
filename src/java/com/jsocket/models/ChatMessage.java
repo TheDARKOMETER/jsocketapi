@@ -4,23 +4,34 @@
  */
 package com.jsocket.models;
 
+
 import java.util.UUID;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  *
  * @author Administrator
  */
+@Entity
 public class ChatMessage {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    
+    private UUID uuid;
     private String content;
     private long timestamp;
     private User author;
-
     private int likes;
     private int dislikes;
-    private UUID uuid;
-    
-    public ChatMessage() {}
-    
+
+    public ChatMessage() {
+    }
+
     public ChatMessage(String content, long timestamp, User author, int likes, int dislikes, UUID uuid) {
         this.content = content;
         this.timestamp = timestamp;
@@ -29,8 +40,7 @@ public class ChatMessage {
         this.dislikes = dislikes;
         this.uuid = uuid;
     }
-    
-    
+
     public String getContent() {
         return content;
     }
@@ -41,6 +51,10 @@ public class ChatMessage {
 
     public User getAuthor() {
         return author;
+    }
+    
+    public Long getId() {
+        return id;
     }
 
     public void setContent(String content) {
@@ -78,5 +92,5 @@ public class ChatMessage {
     public UUID getUuid() {
         return uuid;
     }
-    
+
 }

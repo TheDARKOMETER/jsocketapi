@@ -29,7 +29,7 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
-        System.out.println("A client connected (SessionConnectEvent)");
+        logger.log(Level.INFO, "A client connected (SessionConnectEvent)");
     }
 
     @EventListener
@@ -37,17 +37,19 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination();
         String sessionId = headerAccessor.getSessionId();
+        String username = headerAccessor.getFirstNativeHeader("username");
         logger.log(Level.INFO, "sha message: {0} dest: {1}, sessionId: {2}", new Object[]{headerAccessor.toString(), destination, sessionId});
         if (destination.equals("/topic/globalchat")) {
             logger.info("Welcoming new global chat subscriber");
             messageController.joinGreeting();
+            messageController.serverGreetingMessage(username);
         }
-        
-        System.out.println("A client subscribed");
+
+        logger.log(Level.INFO, "A client subscribed");
     }
 
     @EventListener
     public void handleSessionConnected(SessionConnectedEvent event) throws Exception {
-        System.out.println("A client connected (SessionConnectedEvent)");
+        logger.log(Level.INFO, "A client connected (SessionConnectedEvent)");
     }
 }

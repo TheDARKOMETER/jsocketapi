@@ -4,7 +4,7 @@
  */
 package com.jsocket.jpa;
 
-import jakarta.persistence.Entity;
+
 
 /**
  *

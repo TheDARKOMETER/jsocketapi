@@ -7,6 +7,8 @@ package com.jsocket.controller;
 import com.jsocket.models.ChatMessage;
 import com.jsocket.models.Greeting;
 import com.jsocket.models.HelloMessage;
+import com.jsocket.models.User;
+import java.util.UUID;
 import java.util.logging.Level;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -21,7 +23,9 @@ public class MessageController {
 
     Logger logger = Logger.getLogger(MessageController.class.getName());
     SimpMessagingTemplate template;
-
+    User serverUser = new User("Server", 0, "server@jsocket.com");
+    
+    
     @Autowired
     public MessageController(SimpMessagingTemplate template) {
         this.template = template;
@@ -29,7 +33,7 @@ public class MessageController {
 
     @MessageMapping("/chat")
     @SendTo("/topic/greetings")
-    public Greeting greeting(HelloMessage message) throws Exception {
+    private Greeting greeting(HelloMessage message) throws Exception {
         Thread.sleep(1000); // simulated delay
         logger.log(Level.INFO, "MessageController greeting() called with message as {0}", message.getName());
         return new Greeting("Hello, " + message.getName() + "! From STOMP server");
@@ -37,15 +41,23 @@ public class MessageController {
 
     @MessageMapping("/globalchat")
     @SendTo("/topic/globalchat")
-    public ChatMessage onChatMessage(ChatMessage chatMessage)  throws Exception  {
+    private ChatMessage onChatMessage(ChatMessage chatMessage) throws Exception {
         System.out.println("onCHatMessage called");
         logger.log(Level.INFO, "onChatMessage triggered");
         return chatMessage;
     }
 
+    
+    // Externally used methods to send messages upon events
     public void joinGreeting() throws Exception {
         Thread.sleep(1000); // simulated delay
         logger.log(Level.INFO, "MessageController joinGreeting() called with message as");
         template.convertAndSend("/topic/greetings", new Greeting("Greetings to globalchat"));
+    }
+
+    public void serverGreetingMessage(String usermame) throws Exception {
+        logger.log(Level.INFO, "MessageController serverGreetingMessage() called with.");
+        ChatMessage serverMsg =  new ChatMessage(usermame + " has joined", System.currentTimeMillis(), serverUser, 0, 0, UUID.randomUUID());
+        template.convertAndSend("/topic/globalchat", serverMsg);
     }
 }
