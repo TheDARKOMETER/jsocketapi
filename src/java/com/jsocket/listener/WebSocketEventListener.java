@@ -43,6 +43,7 @@ public class WebSocketEventListener {
             logger.info("Welcoming new global chat subscriber");
             messageController.joinGreeting();
             messageController.serverGreetingMessage(username);
+            messageController.sendMessageHistory();
         }
 
         logger.log(Level.INFO, "A client subscribed");

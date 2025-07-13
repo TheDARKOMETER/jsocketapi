@@ -4,11 +4,35 @@
  */
 package com.jsocket.models;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.GenerationType;
+import javax.persistence.GeneratedValue;
+
 /**
  *
  * @author Administrator
  */
+@Entity
+@Table(name="users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    private String username;
+    private long createdAt;
+    private String email;
+
+    public User() {
+    }
+
+    public User(String username, long createdAt, String email) {
+        this.username = username;
+        this.createdAt = createdAt;
+        this.email = email;
+    }
 
     public String getUsername() {
         return username;
@@ -34,16 +58,4 @@ public class User {
         this.email = email;
     }
 
-    
-    private String username;
-    private long createdAt; 
-    private String email;
-
-    public User(String username, long createdAt, String email) {
-        this.username = username;
-        this.createdAt = createdAt;
-        this.email = email;
-    }
-    
-    public User() {}
 }

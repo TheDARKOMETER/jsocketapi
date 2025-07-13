@@ -28,7 +28,7 @@
     
     <target name="-pre-init" >
         <delete>
-            <fileset dir="lib">
+            <fileset dir="lib" includes="*.jar"/>
         </delete>
     </target>
     

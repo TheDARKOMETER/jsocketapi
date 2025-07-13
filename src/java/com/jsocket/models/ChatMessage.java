@@ -6,16 +6,22 @@ package com.jsocket.models;
 
 
 import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+import javax.persistence.ManyToOne;
 
 /**
  *
  * @author Administrator
  */
 @Entity
+@Table(name="chat_messages")
 public class ChatMessage {
 
     @Id
@@ -23,13 +29,20 @@ public class ChatMessage {
     private long id;
     
     private UUID uuid;
+    
     private String content;
+    
     private long timestamp;
+    
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "author_id")
     private User author;
+    
     private int likes;
+    
     private int dislikes;
 
-    public ChatMessage() {
+    protected ChatMessage() {
     }
 
     public ChatMessage(String content, long timestamp, User author, int likes, int dislikes, UUID uuid) {
