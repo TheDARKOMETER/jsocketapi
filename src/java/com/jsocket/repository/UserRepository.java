@@ -28,13 +28,65 @@ public class UserRepository {
         return instance;
     }
 
-    public User getUser(long id) {
+    public User findById(long id) {
         EntityManager entityManager = emf.createEntityManager();
         try {
             return entityManager.find(User.class, id);
         } finally {
             entityManager.close();
         }
+    }
+
+    public User findByUsername(String username) {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            return entityManager.createQuery("Select user from User user WHERE user.name = :username", User.class).setParameter("username", username).getSingleResult();
+        } catch (Exception e) {
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public User findByEmail(String email) {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            return entityManager.createQuery("Select user from User user where user.email = :email", User.class).setParameter("email", email).getSingleResult();
+        } catch (Exception e) {
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public User update(User user) {
+        EntityManager entityManager = emf.createEntityManager();
+        User managedUser = null;
+        try {
+            entityManager.getTransaction().begin();
+            managedUser = entityManager.merge(user);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+        } finally {
+            entityManager.close();
+        }
+        return managedUser;
+    }
+
+    public User save(User user) {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.persist(user);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+        } finally {
+            entityManager.close();
+        }
+
+        return user;
     }
 
 }

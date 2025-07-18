@@ -7,18 +7,38 @@ package com.jsocket.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+//import javax.persistence.EntityManager;
+//import javax.persistence.EntityManagerFactory;
+//import javax.persistence.Persistence;
+
+import com.jsocket.repository.UserRepository;
+
 import com.jsocket.models.User;
 /**
  *
  * @author thebe
  */
 
+   
+
 @RestController
 public class JSocketRestController {
     
-    @PostMapping("/users")
-    public User loginUser(@RequestBody User user) {
-        
+    private final UserRepository userRepository = UserRepository.getInstance();
+    
+    // TODO: Login user once signup user is finished
+//    @PostMapping("/users")
+//    public User loginUser(@RequestBody User user) {
+//        return new User
+//    }
+    
+    @PostMapping("/signup") 
+    public User signupUser(@RequestBody User user) {
+        return userRepository.save(user);
     }
+    
+      
     
 }

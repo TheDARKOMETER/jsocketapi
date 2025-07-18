@@ -52,7 +52,7 @@ public class MessageController {
     private ChatMessage onChatMessage(ChatMessage chatMessage) throws Exception {
         System.out.println("onChatMessage called");
         logger.log(Level.INFO, "onChatMessage triggered");
-        repository.addChatMessage(chatMessage);
+        repository.save(chatMessage);
         return chatMessage;
     }
 
@@ -73,7 +73,7 @@ public class MessageController {
     public void sendMessageHistory() {
         StompHeaders messageHistoryHeader = new StompHeaders();
         messageHistoryHeader.add("isSendingList", "true");
-        ArrayList<ChatMessage> messageHistory = new ArrayList<ChatMessage>(repository.getAllChatMessages());
+        ArrayList<ChatMessage> messageHistory = new ArrayList<ChatMessage>(repository.findAll());
         template.convertAndSend("/topic/globalchat", messageHistory, (MultiValueMap) messageHistoryHeader);
     }
 }

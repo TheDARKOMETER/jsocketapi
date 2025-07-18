@@ -18,6 +18,7 @@ public class ChatMessageRepository {
 
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("jsocketapiPU");
     private static ChatMessageRepository instance;
+
     private ChatMessageRepository() {
     }
 
@@ -28,12 +29,12 @@ public class ChatMessageRepository {
         return instance;
     }
 
-    public ChatMessage getChatMessage(long id) {
+    public ChatMessage findById(long id) {
         EntityManager entityManager = emf.createEntityManager();
         return entityManager.find(ChatMessage.class, id);
     }
 
-    public void addChatMessage(ChatMessage msg) {
+    public void save(ChatMessage msg) {
         EntityManager entityManager = emf.createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(msg);
@@ -41,11 +42,26 @@ public class ChatMessageRepository {
         entityManager.close();
     }
 
-    public List<ChatMessage> getAllChatMessages() {
+    public List<ChatMessage> findAll() {
         EntityManager entityManager = emf.createEntityManager();
         List<ChatMessage> chatMessages = entityManager.createQuery("SELECT msg from ChatMessage msg", ChatMessage.class).getResultList();
         entityManager.close();
         return chatMessages;
+    }
+
+    public ChatMessage update(ChatMessage message) {
+        EntityManager entityManager = emf.createEntityManager();
+        ChatMessage managedChatMessage = null;
+        try {
+            entityManager.getTransaction().begin();
+            managedChatMessage = entityManager.merge(message);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+        } finally {
+            entityManager.close();
+        }
+        return managedChatMessage;
     }
 
     public void shutdown() {
