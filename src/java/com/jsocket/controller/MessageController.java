@@ -9,6 +9,7 @@ import com.jsocket.models.Greeting;
 import com.jsocket.models.HelloMessage;
 import com.jsocket.models.User;
 import com.jsocket.repository.ChatMessageRepository;
+import java.security.Principal;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -39,6 +40,8 @@ public class MessageController {
         this.template = template;
     }
 
+    
+    // Message mapping for inbound client messages
     @MessageMapping("/chat")
     @SendTo("/topic/greetings")
     private Greeting greeting(HelloMessage message) throws Exception {
@@ -57,7 +60,7 @@ public class MessageController {
     }
 
     
-    // Externally used methods to send messages upon events
+    // Externally used methods to send messages upon events since these messages will be sent by server not client
     public void joinGreeting() throws Exception {
         Thread.sleep(1000); // simulated delay
         logger.log(Level.INFO, "MessageController joinGreeting() called with message as");
@@ -70,10 +73,9 @@ public class MessageController {
         template.convertAndSend("/topic/globalchat", serverMsg);
     }
     
-    public void sendMessageHistory() {
-        StompHeaders messageHistoryHeader = new StompHeaders();
-        messageHistoryHeader.add("isSendingList", "true");
+    public void sendMessageHistory(Principal principal) {
         ArrayList<ChatMessage> messageHistory = new ArrayList<ChatMessage>(repository.findAll());
-        template.convertAndSend("/topic/globalchat", messageHistory, (MultiValueMap) messageHistoryHeader);
+        logger.info("Message history attempting to send to destination /queue/specific-user");
+        template.convertAndSendToUser(principal.getName(), "/queue/specific-user", messageHistory);
     }
 }

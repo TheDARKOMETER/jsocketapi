@@ -14,6 +14,7 @@ import java.util.List;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
+import com.jsocket.config.CustomHandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -21,14 +22,15 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/queue");
         config.setApplicationDestinationPrefixes("/app");
+        config.setUserDestinationPrefix("/user");
         System.out.println("Enabling broker and setting prefix");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/javafxchat").setAllowedOriginPatterns("*");
+        registry.addEndpoint("/javafxchat").setAllowedOriginPatterns("*").setHandshakeHandler(new CustomHandshakeHandler());
         System.out.println("Adding endpoint");
 
     }

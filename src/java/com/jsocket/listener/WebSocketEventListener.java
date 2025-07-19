@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import com.jsocket.models.ChatMessage;
+import java.security.Principal;
 import java.util.logging.Level;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -37,16 +38,19 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination();
         String sessionId = headerAccessor.getSessionId();
+        Principal principal = headerAccessor.getUser();
         String username = headerAccessor.getFirstNativeHeader("username");
-        logger.log(Level.INFO, "sha message: {0} dest: {1}, sessionId: {2}", new Object[]{headerAccessor.toString(), destination, sessionId});
+        logger.log(Level.INFO, "sha message: {0} dest: {1}, sessionId: {2}, principalname: {3}", new Object[]{headerAccessor.toString(), destination, sessionId, principal.getName()});
         if (destination.equals("/topic/globalchat")) {
             logger.info("Welcoming new global chat subscriber");
             messageController.joinGreeting();
             messageController.serverGreetingMessage(username);
-            messageController.sendMessageHistory();
+        } else if (destination.equals("/user/queue/specific-user")) {
+            logger.info("Destination for user matches, sending history to specific user");
+            messageController.sendMessageHistory(principal);
         }
 
-        logger.log(Level.INFO, "A client subscribed");
+        logger.log(Level.INFO, "A client subscribed, sending history");
     }
 
     @EventListener
