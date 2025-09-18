@@ -65,7 +65,7 @@ public class MessageController {
 
     public void sendGreetingMessage(String usermame) throws Exception {
         logger.log(Level.INFO, "MessageController serverGreetingMessage() called with.");
-        ChatMessage serverMsg = new ChatMessage(usermame + " has joined", System.currentTimeMillis(), serverUser, 0, 0, UUID.randomUUID());
+        ChatMessage serverMsg = new ChatMessage("You have connected", System.currentTimeMillis(), serverUser, 0, 0, UUID.randomUUID());
         //template.convertAndSend("/topic/globalchat", serverMsg);
         // Save only, sendMessageHistory will do the sending to prevent duplicates. Only fix I can think of for now.
         repository.save(serverMsg);
