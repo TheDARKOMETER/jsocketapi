@@ -4,6 +4,7 @@
  */
 package com.jsocket.repository;
 
+import com.jsocket.exceptions.UserNotFoundException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import com.jsocket.models.User;
@@ -28,10 +29,12 @@ public class UserRepository {
         return instance;
     }
 
-    public User findById(long id) {
+    public User findById(Long id) {
         EntityManager entityManager = emf.createEntityManager();
         try {
             return entityManager.find(User.class, id);
+        } catch (Exception e) {
+            return null;
         } finally {
             entityManager.close();
         }
@@ -55,6 +58,19 @@ public class UserRepository {
         } catch (Exception e) {
             return null;
         } finally {
+            entityManager.close();
+        }
+    }
+
+    public void deleteById(Long id) throws UserNotFoundException {
+        EntityManager entityManager = emf.createEntityManager();
+        User user = findById(id);
+        if (user == null) {
+            throw new UserNotFoundException("User by id: " + id.toString() + " not found.");
+        } else {
+            entityManager.getTransaction().begin();
+            entityManager.remove(user);
+            entityManager.getTransaction().commit();
             entityManager.close();
         }
     }
@@ -89,4 +105,10 @@ public class UserRepository {
         return user;
     }
 
+    
+    public void shutdown() {
+        if (emf.isOpen()) {
+            emf.close();
+        }
+    }
 }

@@ -25,6 +25,8 @@
         <dependency org="org.springframework.security" name="spring-security-core" rev="5.8.6"/>
         <dependency org="org.springframework.security" name="spring-security-web" rev="5.8.6"/>
         <dependency org="org.springframework.security" name="spring-security-config" rev="5.8.6"/>
+        <!-- https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas -->
+        <dependency org="org.springframework.hateoas" name="spring-hateoas" rev="1.5.5"/>
     </dependencies>
     
 </ivy-module>

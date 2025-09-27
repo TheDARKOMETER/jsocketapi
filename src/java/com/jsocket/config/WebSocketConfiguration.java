@@ -32,7 +32,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/javafxchat").setAllowedOriginPatterns("*").setHandshakeHandler(new CustomHandshakeHandler());
         System.out.println("Adding endpoint");
-
     }
 
     @Override

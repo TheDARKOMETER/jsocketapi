@@ -26,7 +26,7 @@ public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
     
     private UUID uuid;
     
