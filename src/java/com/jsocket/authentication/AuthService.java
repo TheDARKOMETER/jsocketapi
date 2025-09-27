@@ -29,7 +29,6 @@ public class AuthService {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
         Authentication auth = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
-        
         User user = userRepository.findByUsername(username);
         user.setPassword(null);
         return user;

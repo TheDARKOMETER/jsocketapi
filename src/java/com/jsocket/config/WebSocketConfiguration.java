@@ -25,13 +25,13 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         config.enableSimpleBroker("/topic", "/queue");
         config.setApplicationDestinationPrefixes("/app");
         config.setUserDestinationPrefix("/user");
-        System.out.println("Enabling broker and setting prefix");
+        //System.out.println("Enabling broker and setting prefix");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/javafxchat").setAllowedOriginPatterns("*").setHandshakeHandler(new CustomHandshakeHandler());
-        System.out.println("Adding endpoint");
+        //System.out.println("Adding endpoint");
     }
 
     @Override

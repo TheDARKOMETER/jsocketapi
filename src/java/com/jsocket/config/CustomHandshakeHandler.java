@@ -1,7 +1,12 @@
 package com.jsocket.config;
+
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.http.HttpHeaders;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -10,14 +15,16 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 public class CustomHandshakeHandler extends DefaultHandshakeHandler {
 
+    Logger logger = Logger.getLogger(CustomHandshakeHandler.class.getName());
+
     @Override
     protected Principal determineUser(ServerHttpRequest request,
-                                      WebSocketHandler wsHandler,
-                                      Map<String, Object> attributes) {
+            WebSocketHandler wsHandler,
+            Map<String, Object> attributes) {
 
         // Generate a unique user identifier (you can use session ID, UUID, etc.)
         String userId = UUID.randomUUID().toString();
-
+        logger.info("userId: " + userId);
         // Return custom Principal with that ID
         return new Principal() {
             @Override
