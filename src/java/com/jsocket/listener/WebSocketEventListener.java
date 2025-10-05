@@ -32,7 +32,12 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
-        logger.log(Level.INFO, "A client connected (SessionConnectEvent)");
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String destination = headerAccessor.getDestination();
+        String username = headerAccessor.getFirstNativeHeader("username");
+        logger.log(Level.INFO, "sha message: {0} dest: {1}", new Object[]{headerAccessor.toString(), destination,});
+
+        logger.log(Level.INFO, "A client is connecting (SessionConnectEvent)");
     }
 
     @EventListener
@@ -59,6 +64,10 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleSessionConnected(SessionConnectedEvent event) throws Exception {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String destination = headerAccessor.getDestination();
+        logger.info("Connected destination: " + destination);
         logger.log(Level.INFO, "A client connected (SessionConnectedEvent)");
+        
     }
 }

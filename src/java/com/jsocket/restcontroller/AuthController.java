@@ -48,10 +48,10 @@ public class AuthController {
         return authService.login(requestUser.getUsername(), requestUser.getPassword());
     }
 
-    @GetMapping("/user/debug")
-    public String debug() {
-        return "Test";
-    }
+//    @GetMapping("/user/guest")
+//    User debug() {
+//        return "Test";
+//    }
 
     @GetMapping("/user/{id}")
     User one(@PathVariable Long id) {
@@ -59,13 +59,13 @@ public class AuthController {
     }
 
     @PutMapping("/user/{id}")
-    User replaceUser(@RequestBody User replaceEmployee, @PathVariable Long id) {
+    User replaceUser(@RequestBody User replaceUserr, @PathVariable Long id) {
         User user = repository.findById(id);
-        user.setUsername(replaceEmployee.getUsername());
+        user.setUsername(replaceUserr.getUsername());
         if (user != null) {
             return repository.save(user);
         } else {
-            return repository.save(replaceEmployee);
+            return repository.save(replaceUserr);
         }
     }
 

@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -34,8 +35,8 @@ public class ChatMessage {
     
     private long timestamp;
     
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "author_id")
+    @ManyToOne
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User author;
     
     private int likes;

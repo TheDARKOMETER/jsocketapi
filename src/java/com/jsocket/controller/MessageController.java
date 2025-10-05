@@ -9,6 +9,7 @@ import com.jsocket.models.Greeting;
 import com.jsocket.models.HelloMessage;
 import com.jsocket.models.User;
 import com.jsocket.repository.ChatMessageRepository;
+import com.jsocket.repository.UserRepository;
 import java.security.Principal;
 import java.util.List;
 import java.util.ArrayList;
@@ -30,9 +31,10 @@ public class MessageController {
 
     Logger logger = Logger.getLogger(MessageController.class.getName());
     SimpMessagingTemplate template;
-    User serverUser = new User("Server", 0, "server@jsocket.com");
-    ChatMessageRepository repository = ChatMessageRepository.getInstance();
-
+    ChatMessageRepository chatRepository = ChatMessageRepository.getInstance();
+    UserRepository userRepository = UserRepository.getInstance();
+    User serverUser = userRepository.findByEmail("javachat@jchat.com");
+    
     @Autowired
     public MessageController(SimpMessagingTemplate template) {
         this.template = template;
@@ -52,7 +54,7 @@ public class MessageController {
     private ChatMessage onChatMessage(ChatMessage chatMessage) throws Exception {
         System.out.println("onChatMessage called");
         logger.log(Level.INFO, "onChatMessage triggered");
-        repository.save(chatMessage);
+        chatRepository.save(chatMessage);
         return chatMessage;
     }
 
@@ -68,12 +70,17 @@ public class MessageController {
         ChatMessage serverMsg = new ChatMessage("You have connected", System.currentTimeMillis(), serverUser, 0, 0, UUID.randomUUID());
         //template.convertAndSend("/topic/globalchat", serverMsg);
         // Save only, sendMessageHistory will do the sending to prevent duplicates. Only fix I can think of for now.
-        repository.save(serverMsg);
+        chatRepository.save(serverMsg);
     }
 
     public void sendMessageHistory(Principal principal) throws Exception {
-        ArrayList<ChatMessage> messageHistory = new ArrayList<ChatMessage>(repository.findAll());
+        ArrayList<ChatMessage> messageHistory = new ArrayList<ChatMessage>(chatRepository.findAll());
         logger.info("Message history attempting to send to destination /queue/specific-user");
         template.convertAndSendToUser(principal.getName(), "/queue/specific-user", messageHistory);
+    }
+    
+    public void sendGuestUser(Principal principal) throws Exception {
+        User user = userRepository.findByUsername("Guest-"+principal.getName());
+        template.convertAndSendToUser(principal.getName(), "/queue/guest-user", user);
     }
 }

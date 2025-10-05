@@ -15,17 +15,19 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import com.jsocket.config.CustomHandshakeHandler;
+import com.jsocket.models.User;
+import com.jsocket.repository.UserRepository;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
-
+    
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue");
         config.setApplicationDestinationPrefixes("/app");
         config.setUserDestinationPrefix("/user");
-        //System.out.println("Enabling broker and setting prefix");
+        createServerUserInstance();
     }
 
     @Override
@@ -40,4 +42,8 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         return false;
     }
        
+    private void createServerUserInstance() {
+        UserRepository userRepository = UserRepository.getInstance();
+        userRepository.save(new User("Server", System.currentTimeMillis(), "javachat@jchat.com"));
+    }
 }
