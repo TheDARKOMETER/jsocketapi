@@ -43,7 +43,7 @@ public class UserRepository {
     public User findByUsername(String username) {
         EntityManager entityManager = emf.createEntityManager();
         try {
-            return entityManager.createQuery("Select user from User user WHERE user.name = :username", User.class).setParameter("username", username).getSingleResult();
+            return entityManager.createQuery("Select user from User user WHERE user.username = :username", User.class).setParameter("username", username).getSingleResult();
         } catch (Exception e) {
             return null;
         } finally {

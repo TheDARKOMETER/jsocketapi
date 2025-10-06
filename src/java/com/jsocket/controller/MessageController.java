@@ -34,7 +34,7 @@ public class MessageController {
     ChatMessageRepository chatRepository = ChatMessageRepository.getInstance();
     UserRepository userRepository = UserRepository.getInstance();
     User serverUser = userRepository.findByEmail("javachat@jchat.com");
-    
+
     @Autowired
     public MessageController(SimpMessagingTemplate template) {
         this.template = template;
@@ -78,9 +78,11 @@ public class MessageController {
         logger.info("Message history attempting to send to destination /queue/specific-user");
         template.convertAndSendToUser(principal.getName(), "/queue/specific-user", messageHistory);
     }
-    
+
     public void sendGuestUser(Principal principal) throws Exception {
-        User user = userRepository.findByUsername("Guest-"+principal.getName());
+        logger.info("Attempting to find user by username " + "Guest-" + principal.getName());
+        User user = userRepository.findByUsername("Guest-" + principal.getName());
+        logger.info("Found user: " + user.getUsername());
         template.convertAndSendToUser(principal.getName(), "/queue/guest-user", user);
     }
 }

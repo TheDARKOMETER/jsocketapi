@@ -22,9 +22,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique=true)
+
+    @Column(unique = true)
     private String username;
     private long createdAt;
+    @Column(unique = true)
     private String email;
     private String password;
     private String role;
@@ -42,7 +44,7 @@ public class User {
 
     public User(String username, long createdAt, String email) {
         this.username = username;
-        this.createdAt = createdAt;
+        this.createdAt =  createdAt;
         this.email = email;
     }
 
@@ -90,4 +92,11 @@ public class User {
         this.email = email;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

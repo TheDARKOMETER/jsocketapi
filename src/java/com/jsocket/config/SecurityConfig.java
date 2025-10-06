@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     JSocketUserDetailService userDetailsService;
+    
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -43,7 +44,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
-                .passwordEncoder(new BCryptPasswordEncoder(5));
+                .passwordEncoder(bCryptPasswordEncoder());
+    }
+    
+    @Bean 
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder(5);
     }
 
 }

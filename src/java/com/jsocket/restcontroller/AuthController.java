@@ -32,27 +32,31 @@ public class AuthController {
 
     @Autowired
     AuthService authService;
-    
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private final UserRepository repository = UserRepository.getInstance();
     Logger logger = Logger.getLogger(AuthController.class.getName());
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
 
     @PostMapping("/user/signup")
     User newUser(@RequestBody User newUser) {
-        newUser.setPassword(encoder.encode(newUser.getPassword()));
+        newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+        logger.info("Encoded password is: " + newUser.getPassword());
+        newUser.setRole("User");
         return repository.save(newUser);
     }
 
     @PostMapping("/user/login")
     User loginUser(@RequestBody User requestUser) throws UserNotFoundException {
-        return authService.login(requestUser.getUsername(), requestUser.getPassword());
+        User loginUser = authService.login(requestUser.getUsername(), requestUser.getPassword());
+        logger.info("Logging in user: " + loginUser.getUsername());
+        return loginUser;
     }
 
 //    @GetMapping("/user/guest")
 //    User debug() {
 //        return "Test";
 //    }
-
     @GetMapping("/user/{id}")
     User one(@PathVariable Long id) {
         return repository.findById(id);

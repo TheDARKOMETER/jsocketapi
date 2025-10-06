@@ -58,16 +58,16 @@ public class WebSocketEventListener {
         } else if (destination.equals("/topic/greetings")) {
             messageController.sendJoinGreeting(principal);
         }
-
+        else if (destination.equals("/user/queue/guest-user")) {
+            messageController.sendGuestUser(principal);
+        }
+   
         logger.log(Level.INFO, "A client subscribed, sending history");
     }
 
     @EventListener
     public void handleSessionConnected(SessionConnectedEvent event) throws Exception {
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String destination = headerAccessor.getDestination();
-        logger.info("Connected destination: " + destination);
         logger.log(Level.INFO, "A client connected (SessionConnectedEvent)");
-        
+
     }
 }
