@@ -4,7 +4,6 @@
  */
 package com.jsocket.restcontroller;
 
-import com.jsocket.authentication.AuthService;
 import com.jsocket.exceptions.UserNotFoundException;
 import com.jsocket.repository.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +18,18 @@ import com.jsocket.models.User;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.PathVariable;
+import com.jsocket.models.LoginRequest;
+import com.jsocket.models.LoginResponse;
+import com.jsocket.models.SignUpRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 
 /**
  *
@@ -30,33 +38,42 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 public class AuthController {
 
-    @Autowired
-    AuthService authService;
+
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     private final UserRepository repository = UserRepository.getInstance();
     Logger logger = Logger.getLogger(AuthController.class.getName());
 
     @PostMapping("/user/signup")
-    User newUser(@RequestBody User newUser) {
-        newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
-        logger.info("Encoded password is: " + newUser.getPassword());
-        newUser.setRole("User");
-        return repository.save(newUser);
+    LoginResponse newUser(@RequestBody SignUpRequest newUser) {
+        User user = new User();
+        user.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+        user.setEmail(newUser.getEmail());
+        user.setRole("ROLE_USER");
+        user.setUsername(newUser.getUsername());
+        user.setCreatedAt(System.currentTimeMillis());
+        repository.save(user);
+        // Authenticate after signup for convenience :)
+        LoginRequest loginRequest = new LoginRequest(newUser.getUsername(), newUser.getPassword());
+        return login(loginRequest);
     }
 
-    @PostMapping("/user/login")
-    User loginUser(@RequestBody User requestUser) throws UserNotFoundException {
-        User loginUser = authService.login(requestUser.getUsername(), requestUser.getPassword());
-        logger.info("Logging in user: " + loginUser.getUsername());
-        return loginUser;
+    @PostMapping("user/login")
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUsername(), loginRequest.getPassword());
+        Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext(); // we create empty context to avoid race condition
+        securityContext.setAuthentication(authenticationResponse);
+        SecurityContextHolder.setContext(securityContext);
+        User user = (User) authenticationResponse.getPrincipal();
+        LoginResponse response = new LoginResponse(user.getUsername(), user.getId(), user.getEmail(), user.getRole());
+        return response;
     }
 
-//    @GetMapping("/user/guest")
-//    User debug() {
-//        return "Test";
-//    }
     @GetMapping("/user/{id}")
     User one(@PathVariable Long id) {
         return repository.findById(id);

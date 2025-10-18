@@ -14,24 +14,7 @@
          http://www.springframework.org/schema/mvc
          http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:component-scan base-package="com.jsocket.restcontroller, com.jsocket.controller, com.jsocket.config, com.jsocket.listener, com.jsocket.authentication" />
+    <context:component-scan base-package="com.jsocket.restcontroller, com.jsocket.controller, com.jsocket.listener" />
     <mvc:annotation-driven />
-   
-<!--    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="mappings">
-            <props>
-                <prop key="index.htm">indexController</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="viewResolver"
-          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-          p:prefix="/WEB-INF/jsp/"
-          p:suffix=".jsp" />
-    
-    <bean name="indexController"
-        class="org.springframework.web.servlet.mvc.ParameterizableViewController"
-        p:viewName="index" />-->
 
 </beans>
