@@ -38,7 +38,6 @@ import org.springframework.security.core.context.SecurityContext;
 @RestController
 public class AuthController {
 
-
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -47,6 +46,13 @@ public class AuthController {
 
     private final UserRepository repository = UserRepository.getInstance();
     Logger logger = Logger.getLogger(AuthController.class.getName());
+
+    
+    // Checking security filter for /admin path
+    @GetMapping("/admin/debug")
+    String debug() {
+        return "Debug";
+    }
 
     @PostMapping("/user/signup")
     LoginResponse newUser(@RequestBody SignUpRequest newUser) {

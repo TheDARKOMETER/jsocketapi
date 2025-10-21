@@ -49,7 +49,7 @@ public class CustomHandshakeHandler extends DefaultHandshakeHandler {
                 logger.info("is logged in is false, saving guest user");
                 UserRepository userRepository = UserRepository.getInstance();
                 User guestUser = new User("Guest-" + userId, System.currentTimeMillis(), null);
-                guestUser.setRole("Guest");
+                guestUser.setRole("ROLE_GUEST");
                 User savedGuestUser = userRepository.save(guestUser);
                 logger.info(savedGuestUser.getUsername() + " successfully saved");
 

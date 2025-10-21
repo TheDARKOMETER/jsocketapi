@@ -42,16 +42,17 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleSubscribeEvent(SessionSubscribeEvent event) throws Exception {
+        logger.info("SessionSubscribeEvent triggered");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination();
         String sessionId = headerAccessor.getSessionId();
         Principal principal = headerAccessor.getUser();
         String username = headerAccessor.getFirstNativeHeader("username");
+        logger.info("Destination: " + destination);
         logger.log(Level.INFO, "sha message: {0} dest: {1}, sessionId: {2}, principalname: {3}", new Object[]{headerAccessor.toString(), destination, sessionId, principal.getName()});
         if (destination.equals("/topic/globalchat")) {
             logger.info("Welcoming new global chat subscriber");
             messageController.sendGreetingMessage(username);
-
         } else if (destination.equals("/user/queue/specific-user")) {
             logger.info("Destination for client user only, sending history to specific user");
             messageController.sendMessageHistory(principal);
@@ -59,6 +60,7 @@ public class WebSocketEventListener {
             messageController.sendJoinGreeting(principal);
         }
         else if (destination.equals("/user/queue/guest-user")) {
+            logger.info("Principal info: " + principal.getName());
             messageController.sendGuestUser(principal);
         }
    

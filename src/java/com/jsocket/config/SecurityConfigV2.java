@@ -5,6 +5,7 @@
 package com.jsocket.config;
 
 
+import com.jsocket.config.JSocketUserDetailService;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -35,7 +36,8 @@ public class SecurityConfigV2 {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests((auth) -> auth.antMatchers("/user").permitAll().anyRequest().authenticated())
+        httpSecurity.authorizeHttpRequests((auth) -> auth.antMatchers("/user/**").permitAll().antMatchers("/admin/**")
+                .hasRole("ADMIN").anyRequest().authenticated())
                 .httpBasic(withDefaults());
         return httpSecurity.build();
     }

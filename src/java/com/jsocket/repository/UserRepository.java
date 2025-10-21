@@ -64,13 +64,24 @@ public class UserRepository {
 
     public void deleteById(Long id) throws UserNotFoundException {
         EntityManager entityManager = emf.createEntityManager();
-        User user = findById(id);
-        if (user == null) {
-            throw new UserNotFoundException("User by id: " + id.toString() + " not found.");
-        } else {
-            entityManager.getTransaction().begin();
-            entityManager.remove(user);
-            entityManager.getTransaction().commit();
+        try {
+
+            User user = entityManager.find(User.class, id);
+            if (user == null) {
+                throw new UserNotFoundException("User by id: " + id.toString() + " not found.");
+            } else {
+                entityManager.getTransaction().begin();
+                entityManager.remove(user);
+                entityManager.getTransaction().commit();
+                entityManager.close();
+            }
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+            throw e;
+        } finally {
             entityManager.close();
         }
     }
@@ -84,6 +95,7 @@ public class UserRepository {
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            e.printStackTrace(); // log it
         } finally {
             entityManager.close();
         }
@@ -98,6 +110,7 @@ public class UserRepository {
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
+            e.printStackTrace(); // log it
         } finally {
             entityManager.close();
         }
@@ -105,7 +118,6 @@ public class UserRepository {
         return user;
     }
 
-    
     public void shutdown() {
         if (emf.isOpen()) {
             emf.close();
