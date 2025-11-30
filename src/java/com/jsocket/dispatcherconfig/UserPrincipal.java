@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.jsocket.config;
+package com.jsocket.dispatcherconfig;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import com.jsocket.models.User;
@@ -27,6 +27,18 @@ public class UserPrincipal implements UserDetails {
         return user.getUsername();
     }
 
+    public Long getId() {
+        return user.getId();
+    }
+
+    public String getEmail() {
+        return user.getEmail();
+    }
+
+    public String getRole() {
+        return user.getRole();
+    }
+
     public String getPassword() {
         return user.getPassword();
     }
@@ -36,19 +48,19 @@ public class UserPrincipal implements UserDetails {
     }
 
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     public boolean isEnabled() {
         return true;
     }
-    
+
 }

@@ -28,17 +28,19 @@ public class JSocketRestController {
     
     private final UserRepository userRepository = UserRepository.getInstance();
     
+    
+    // UNUSED
     // TODO: Login user once signup user is finished
 //    @PostMapping("/users")
 //    public User loginUser(@RequestBody User user) {
 //        return new User
+////    }
+//    
+//    @PostMapping("/signup") 
+//    public User signupUser(@RequestBody User user) {
+//        return userRepository.save(user);
 //    }
-    
-    @PostMapping("/signup") 
-    public User signupUser(@RequestBody User user) {
-        return userRepository.save(user);
-    }
-    
-      
+//    
+//      
     
 }

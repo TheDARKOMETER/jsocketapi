@@ -16,9 +16,10 @@ public class SignUpRequest {
     
     public SignUpRequest() {}
 
-    public SignUpRequest(String username, String password) {
+    public SignUpRequest(String username, String password, String email) {
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
     public String getUsername() {

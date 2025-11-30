@@ -1,4 +1,4 @@
-package com.jsocket.config;
+package com.jsocket.dispatcherconfig;
 
 import com.jsocket.models.User;
 import com.jsocket.repository.UserRepository;
@@ -36,7 +36,6 @@ public class CustomHandshakeHandler extends DefaultHandshakeHandler {
         if (auth != null && auth.isAuthenticated()) {
             return () -> ((UserDetails) auth.getPrincipal()).getUsername();
         } else {
-
             URI uri = request.getURI();
             String query = uri.getQuery();
             String userId = UUID.randomUUID().toString();

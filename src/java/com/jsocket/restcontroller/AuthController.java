@@ -4,6 +4,7 @@
  */
 package com.jsocket.restcontroller;
 
+import com.jsocket.dispatcherconfig.UserPrincipal;
 import com.jsocket.exceptions.UserNotFoundException;
 import com.jsocket.repository.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import com.jsocket.models.LoginResponse;
 import com.jsocket.models.SignUpRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
@@ -47,10 +49,15 @@ public class AuthController {
     private final UserRepository repository = UserRepository.getInstance();
     Logger logger = Logger.getLogger(AuthController.class.getName());
 
-    
     // Checking security filter for /admin path
     @GetMapping("/admin/debug")
     String debug() {
+        return "Debug";
+    }
+
+    // Checking security filter for /user path
+    @GetMapping("/user/debug")
+    String debugUser() {
         return "Debug";
     }
 
@@ -58,11 +65,17 @@ public class AuthController {
     LoginResponse newUser(@RequestBody SignUpRequest newUser) {
         User user = new User();
         user.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+        logger.log(Level.INFO, "New user with email: " + newUser.getEmail());
+
         user.setEmail(newUser.getEmail());
+
         user.setRole("ROLE_USER");
         user.setUsername(newUser.getUsername());
         user.setCreatedAt(System.currentTimeMillis());
-        repository.save(user);
+        User savedUser = repository.save(user);
+        logger.log(Level.INFO, "Saving user with id: " + savedUser.getId());
+        logger.log(Level.INFO, "Saving user with email: " + savedUser.getEmail());
+
         // Authenticate after signup for convenience :)
         LoginRequest loginRequest = new LoginRequest(newUser.getUsername(), newUser.getPassword());
         return login(loginRequest);
@@ -75,7 +88,10 @@ public class AuthController {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext(); // we create empty context to avoid race condition
         securityContext.setAuthentication(authenticationResponse);
         SecurityContextHolder.setContext(securityContext);
-        User user = (User) authenticationResponse.getPrincipal();
+        UserPrincipal user = (UserPrincipal) authenticationResponse.getPrincipal();
+        logger.log(Level.INFO, "Returning user with id: " + user.getId());
+        logger.log(Level.INFO, "Returning user with email: " + user.getEmail());
+
         LoginResponse response = new LoginResponse(user.getUsername(), user.getId(), user.getEmail(), user.getRole());
         return response;
     }
@@ -86,13 +102,13 @@ public class AuthController {
     }
 
     @PutMapping("/user/{id}")
-    User replaceUser(@RequestBody User replaceUserr, @PathVariable Long id) {
+    User replaceUser(@RequestBody User replaceUser, @PathVariable Long id) {
         User user = repository.findById(id);
-        user.setUsername(replaceUserr.getUsername());
+        user.setUsername(replaceUser.getUsername());
         if (user != null) {
             return repository.save(user);
         } else {
-            return repository.save(replaceUserr);
+            return repository.save(replaceUser);
         }
     }
 

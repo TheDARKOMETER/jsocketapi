@@ -4,14 +4,12 @@
  */
 package com.jsocket.config;
 
-
-import com.jsocket.config.JSocketUserDetailService;
+import com.jsocket.dispatcherconfig.JSocketUserDetailService;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,27 +31,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfigV2 {
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests((auth) -> auth.antMatchers("/user/**").permitAll().antMatchers("/admin/**")
-                .hasRole("ADMIN").anyRequest().authenticated())
+        httpSecurity.authorizeHttpRequests((auth) -> auth.antMatchers("/user/**").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/javafxchat/**").permitAll()
+                .anyRequest().authenticated())
                 .httpBasic(withDefaults());
         return httpSecurity.build();
     }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder(5);
-    }
-    
-
-    @Bean
-    public AuthenticationManager authenticatioNmanager(JSocketUserDetailService jSocketUserDetailService, BCryptPasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(jSocketUserDetailService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(authenticationProvider);
-    }
-    
 }

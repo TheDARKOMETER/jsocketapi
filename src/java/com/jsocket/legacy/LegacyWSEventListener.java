@@ -7,6 +7,7 @@ package com.jsocket.legacy;
 /**
  *
  * @author User
+ * Old legacy code, used for reference
  */
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;

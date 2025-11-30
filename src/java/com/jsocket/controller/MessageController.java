@@ -20,6 +20,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import java.util.logging.Logger;
+import javax.management.RuntimeErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -54,6 +55,14 @@ public class MessageController {
     private ChatMessage onChatMessage(ChatMessage chatMessage) throws Exception {
         System.out.println("onChatMessage called");
         logger.log(Level.INFO, "onChatMessage triggered");
+        Long userId = chatMessage.getAuthor().getId();
+        User existingUser = userRepository.findById(userId);
+        
+        if (existingUser == null) {
+            throw new RuntimeException("User with ID" + userId  + "not found");
+        }
+        
+        chatMessage.setAuthor(existingUser);
         chatRepository.save(chatMessage);
         return chatMessage;
     }

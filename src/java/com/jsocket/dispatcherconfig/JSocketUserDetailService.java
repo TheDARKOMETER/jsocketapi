@@ -2,8 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.jsocket.config;
+package com.jsocket.dispatcherconfig;
 
+import com.jsocket.dispatcherconfig.UserPrincipal;
+import com.jsocket.dispatcherconfig.UserPrincipal;
+import com.jsocket.dispatcherconfig.UserPrincipal;
 import com.jsocket.models.User;
 import com.jsocket.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +27,7 @@ public class JSocketUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        
         User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + username);

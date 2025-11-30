@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 /**
  *
  * @author thebe
+ * Old legacy code, used for reference
  */
 @Service
 public class AuthService {

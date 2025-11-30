@@ -22,6 +22,6 @@
     p:password="${jdbc.password}" /-->
 
     <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
-    <context:component-scan base-package="com.jsocket.config, com.jsocket.service, com.jsocket.repository"/>
+    <context:component-scan base-package="com.jsocket.config, com.jsocket.repository"/>
 
 </beans>

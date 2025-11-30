@@ -12,16 +12,15 @@ public class LoginResponse {
 
     private Long id;
     private String username;
-    private long createdAt;
     private String email;
     private String role;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(String username, long createdAt, String email, String role) {
+    public LoginResponse(String username, Long id, String email, String role) {
         this.username = username;
-        this.createdAt = createdAt;
+        this.id = id;
         this.email = email;
         this.role = role;
     }
@@ -32,14 +31,6 @@ public class LoginResponse {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public long getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getEmail() {

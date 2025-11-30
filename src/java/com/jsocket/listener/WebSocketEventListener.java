@@ -21,7 +21,6 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 @Component
 public class WebSocketEventListener {
 
-    ChatMessageRepository cmr = ChatMessageRepository.getInstance();
     Logger logger = Logger.getLogger(WebSocketEventListener.class.getName());
 
     @Autowired

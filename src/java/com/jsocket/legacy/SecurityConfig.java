@@ -4,7 +4,7 @@
  */
 package com.jsocket.legacy;
 
-import com.jsocket.config.JSocketUserDetailService;
+import com.jsocket.dispatcherconfig.JSocketUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 /**
  *
  * @author thebe
+ * Old legacy code, used for reference
  */
 @Configuration
 @EnableWebSecurity

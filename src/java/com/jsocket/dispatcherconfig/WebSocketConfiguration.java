@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.jsocket.config;
+package com.jsocket.dispatcherconfig;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -14,7 +14,6 @@ import java.util.List;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
-import com.jsocket.config.CustomHandshakeHandler;
 import com.jsocket.models.User;
 import com.jsocket.repository.UserRepository;
 
