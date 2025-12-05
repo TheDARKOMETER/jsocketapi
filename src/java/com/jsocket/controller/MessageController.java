@@ -66,6 +66,11 @@ public class MessageController {
         chatRepository.save(chatMessage);
         return chatMessage;
     }
+    
+    @MessageMapping("/guest")
+    public void handleRequest(Principal principal) throws Exception {
+        sendGuestUser(principal);
+    }
 
     // Externally used methods to send messages upon events since these messages will be sent by server not client
     public void sendJoinGreeting(Principal principal) throws Exception {
