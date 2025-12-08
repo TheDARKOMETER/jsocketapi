@@ -111,7 +111,7 @@ public class MessageController {
 
     public void sendGuestUser(Principal principal) throws Exception {
         logger.info("Attempting to find user by username " + "Guest-" + principal.getName());
-        User user = userRepository.findByUsername("Guest-" + principal.getName());
+        User user = userRepository.findByUsername(principal.getName());
         logger.info("Found user: " + user.getUsername());
         template.convertAndSendToUser(principal.getName(), "/queue/guest-user", user);
     }

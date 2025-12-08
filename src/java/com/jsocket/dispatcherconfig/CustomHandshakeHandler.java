@@ -51,7 +51,12 @@ public class CustomHandshakeHandler extends DefaultHandshakeHandler {
                 guestUser.setRole("ROLE_GUEST");
                 User savedGuestUser = userRepository.save(guestUser);
                 logger.info(savedGuestUser.getUsername() + " successfully saved");
-
+                return new Principal() {
+                    @Override
+                    public String getName() {
+                        return guestUser.getUsername();
+                    }
+                };
             } else {
                 logger.info("is logged in is true, no need to save guest user");
             }
