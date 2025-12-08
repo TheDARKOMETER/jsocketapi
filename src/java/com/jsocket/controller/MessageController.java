@@ -8,6 +8,7 @@ import com.jsocket.models.ChatMessage;
 import com.jsocket.models.Greeting;
 import com.jsocket.models.HelloMessage;
 import com.jsocket.models.User;
+import com.jsocket.models.UsersOnline;
 import com.jsocket.repository.ChatMessageRepository;
 import com.jsocket.repository.UserRepository;
 import java.security.Principal;
@@ -24,18 +25,33 @@ import javax.management.RuntimeErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.web.util.HtmlUtils;
 import org.springframework.util.MultiValueMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class MessageController {
-
+    
+    @Autowired
+    private SimpUserRegistry simpUserRegistry;
+    
+    
     Logger logger = Logger.getLogger(MessageController.class.getName());
     SimpMessagingTemplate template;
     ChatMessageRepository chatRepository = ChatMessageRepository.getInstance();
     UserRepository userRepository = UserRepository.getInstance();
     User serverUser = userRepository.findByEmail("javachat@jchat.com");
-
+    UsersOnline usersOnline = new UsersOnline();
+    
+    
+    private void getOnlineUserDetails() {
+        usersOnline.setOnlineCount(simpUserRegistry.getUserCount());
+        List<String> onlineUsers = simpUserRegistry.getUsers().stream().map(user -> user.getName()).collect(Collectors.toList());
+        usersOnline.setUserList((ArrayList<String>) onlineUsers);
+    }
+    
     @Autowired
     public MessageController(SimpMessagingTemplate template) {
         this.template = template;
@@ -98,5 +114,10 @@ public class MessageController {
         User user = userRepository.findByUsername("Guest-" + principal.getName());
         logger.info("Found user: " + user.getUsername());
         template.convertAndSendToUser(principal.getName(), "/queue/guest-user", user);
+    }
+    
+    public void broadcastOnlineUsers() {
+        getOnlineUserDetails();
+        template.convertAndSend("/topic/online-users", usersOnline);
     }
 }

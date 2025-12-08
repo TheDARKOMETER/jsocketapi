@@ -16,6 +16,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import java.util.logging.Logger;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 @Component
@@ -40,6 +41,11 @@ public class WebSocketEventListener {
     }
 
     @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        messageController.broadcastOnlineUsers();
+    }
+
+    @EventListener
     public void handleSubscribeEvent(SessionSubscribeEvent event) throws Exception {
         logger.info("SessionSubscribeEvent triggered");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -57,18 +63,20 @@ public class WebSocketEventListener {
             messageController.sendMessageHistory(principal);
         } else if (destination.equals("/topic/greetings")) {
             messageController.sendJoinGreeting(principal);
-        }
-        else if (destination.equals("/user/queue/guest-user")) {
+        } else if (destination.equals("/user/queue/guest-user")) {
             logger.info("Principal info: " + principal.getName());
             messageController.sendGuestUser(principal);
+        } else if (destination.equals("/topic/online-users")) {
+            messageController.broadcastOnlineUsers();
         }
-   
+
         logger.log(Level.INFO, "A client subscribed, sending history");
     }
 
     @EventListener
     public void handleSessionConnected(SessionConnectedEvent event) throws Exception {
+        messageController.broadcastOnlineUsers();
         logger.log(Level.INFO, "A client connected (SessionConnectedEvent)");
-
     }
+
 }
