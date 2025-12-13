@@ -29,9 +29,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.jsocket.models.LoginRequest;
 import com.jsocket.models.LoginResponse;
 import com.jsocket.models.SignUpRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
  *
@@ -45,6 +50,9 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private SecurityContextRepository securityContextRepository;
 
     private final UserRepository repository = UserRepository.getInstance();
     Logger logger = Logger.getLogger(AuthController.class.getName());
@@ -62,27 +70,31 @@ public class AuthController {
     }
 
     @PostMapping("/user/signup")
-    LoginResponse newUser(@RequestBody SignUpRequest newUser) {
+    public ResponseEntity<String> newUser(@RequestBody SignUpRequest newUser) {
         User user = new User();
         user.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
         logger.log(Level.INFO, "New user with email: " + newUser.getEmail());
-
-        user.setEmail(newUser.getEmail());
-
-        user.setRole("ROLE_USER");
-        user.setUsername(newUser.getUsername());
-        user.setCreatedAt(System.currentTimeMillis());
-        User savedUser = repository.save(user);
-        logger.log(Level.INFO, "Saving user with id: " + savedUser.getId());
-        logger.log(Level.INFO, "Saving user with email: " + savedUser.getEmail());
-
-        // Authenticate after signup for convenience :)
-        LoginRequest loginRequest = new LoginRequest(newUser.getUsername(), newUser.getPassword());
-        return login(loginRequest);
+        try {
+            user.setEmail(newUser.getEmail());
+            user.setRole("ROLE_USER");
+            user.setUsername(newUser.getUsername());
+            user.setCreatedAt(System.currentTimeMillis());
+            User savedUser = repository.save(user);
+            logger.log(Level.INFO, "Saving user with id: " + savedUser.getId());
+            logger.log(Level.INFO, "Saving user with email: " + savedUser.getEmail());
+            // Authenticate after signup for convenience :)
+            LoginRequest loginRequest = new LoginRequest(newUser.getUsername(), newUser.getPassword());
+            return ResponseEntity.ok("Sign up success");
+        } catch (DataIntegrityViolationException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email or username already exists");
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "error signing up user", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occured");
+        }
     }
 
-    @PostMapping("user/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+    @PostMapping("/user/login")
+    public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUsername(), loginRequest.getPassword());
         Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext(); // we create empty context to avoid race condition
@@ -91,11 +103,17 @@ public class AuthController {
         UserPrincipal user = (UserPrincipal) authenticationResponse.getPrincipal();
         logger.log(Level.INFO, "Returning user with id: " + user.getId());
         logger.log(Level.INFO, "Returning user with email: " + user.getEmail());
-
-        LoginResponse response = new LoginResponse(user.getUsername(), user.getId(), user.getEmail(), user.getRole());
-        return response;
+        securityContextRepository.saveContext(securityContext, request, response);
+        LoginResponse loginResponse = new LoginResponse(user.getUsername(), user.getId(), user.getEmail(), user.getRole());
+        return loginResponse;
     }
 
+    @PostMapping("/user/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        return ResponseEntity.ok().build();
+    }
+    
     @GetMapping("/user/{id}")
     User one(@PathVariable Long id) {
         return repository.findById(id);
