@@ -16,11 +16,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import com.jsocket.models.User;
 import com.jsocket.repository.UserRepository;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
-    
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue");
@@ -31,7 +32,9 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/javafxchat").setAllowedOriginPatterns("*").setHandshakeHandler(new CustomHandshakeHandler());
+        registry.addEndpoint("/javafxchat").setAllowedOriginPatterns("*")
+                .addInterceptors(new HttpSessionHandshakeInterceptor())
+                .setHandshakeHandler(new CustomHandshakeHandler());
         //System.out.println("Adding endpoint");
     }
 
@@ -40,7 +43,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         messageConverters.add(new MappingJackson2MessageConverter());
         return false;
     }
-       
+
     private void createServerUserInstance() {
         UserRepository userRepository = UserRepository.getInstance();
         userRepository.save(new User("Server", System.currentTimeMillis(), "javachat@jchat.com"));
