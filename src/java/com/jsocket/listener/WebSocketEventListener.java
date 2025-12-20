@@ -55,18 +55,19 @@ public class WebSocketEventListener {
         String username = headerAccessor.getFirstNativeHeader("username");
         logger.info("Destination: " + destination);
         logger.log(Level.INFO, "sha message: {0} dest: {1}, sessionId: {2}, principalname: {3}", new Object[]{headerAccessor.toString(), destination, sessionId, principal.getName()});
-        if (destination.equals("/topic/globalchat")) {
+        if (destination.equals("/user/queue/join-message")) {
             logger.info("Welcoming new global chat subscriber");
-            messageController.sendGreetingMessage(username);
-        } else if (destination.equals("/user/queue/specific-user")) {
+            messageController.sendGreetingMessage(principal);
+        }
+        if (destination.equals("/user/queue/history")) {
             logger.info("Destination for client user only, sending history to specific user");
             messageController.sendMessageHistory(principal);
-        } else if (destination.equals("/topic/greetings")) {
-            messageController.sendJoinGreeting(principal);
-        } else if (destination.equals("/user/queue/guest-user")) {
+        }
+        if (destination.equals("/user/queue/guest-user")) {
             logger.info("Principal info: " + principal.getName());
             messageController.sendGuestUser(principal);
-        } else if (destination.equals("/topic/online-users")) {
+        }
+        if (destination.equals("/topic/online-users")) {
             messageController.broadcastOnlineUsers();
         }
 

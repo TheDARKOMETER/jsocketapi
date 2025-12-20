@@ -88,25 +88,20 @@ public class MessageController {
         sendGuestUser(principal);
     }
 
-    // Externally used methods to send messages upon events since these messages will be sent by server not client
-    public void sendJoinGreeting(Principal principal) throws Exception {
-        String msg = "You have joined the chat";
-        logger.log(Level.INFO, "MessageController joinGreeting() called with message as " + msg);
-        template.convertAndSendToUser(principal.getName(), "/topic/greetings", new ChatMessage(msg, System.currentTimeMillis(), serverUser, 0, 0, UUID.randomUUID()));
-    }
 
-    public void sendGreetingMessage(String usermame) throws Exception {
+
+    public void sendGreetingMessage(Principal principal) throws Exception {
         logger.log(Level.INFO, "MessageController serverGreetingMessage() called with.");
         ChatMessage serverMsg = new ChatMessage("You have connected", System.currentTimeMillis(), serverUser, 0, 0, UUID.randomUUID());
-        //template.convertAndSend("/topic/globalchat", serverMsg);
+        template.convertAndSendToUser(principal.getName(), "/queue/join-message", serverMsg);
         // Save only, sendMessageHistory will do the sending to prevent duplicates. Only fix I can think of for now.
-        chatRepository.save(serverMsg);
+        //chatRepository.save(serverMsg);
     }
 
     public void sendMessageHistory(Principal principal) throws Exception {
         ArrayList<ChatMessage> messageHistory = new ArrayList<ChatMessage>(chatRepository.findAll());
         logger.info("Message history attempting to send to destination /queue/specific-user");
-        template.convertAndSendToUser(principal.getName(), "/queue/specific-user", messageHistory);
+        template.convertAndSendToUser(principal.getName(), "/queue/history", messageHistory);
     }
 
     public void sendGuestUser(Principal principal) throws Exception {
